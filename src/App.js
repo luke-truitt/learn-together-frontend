@@ -7,7 +7,7 @@ import { useState } from "react";
 import axios from "axios";
 
 // API connection
-const BASE_ENDPOINT = "http://127.0.0.1:5000/";
+const BASE_ENDPOINT = "https://lt-model.herokuapp.com/";
 
 function App() {
   // State variables
@@ -31,7 +31,7 @@ function App() {
   };
 
   const processImage = () => {
-    const upload_endpoint = BASE_ENDPOINT + "upload";
+    const upload_endpoint = BASE_ENDPOINT + "predict";
     const formData = new FormData();
     formData.append("file", image);
     // const data = { file: image };
@@ -40,10 +40,18 @@ function App() {
     axios.post(upload_endpoint, formData).then(
       (response) => {
         var result = response.data;
-        console.log(result);
+        if(result.class_id == "0") {
+          console.log("CAT")
+          incrementCats()
+        } else {
+          console.log("DOG")
+          incrementDogs()
+        }
+        removeImage()
       },
       (error) => {
         console.log(error);
+        removeImage()
       }
     );
     // POST URL to model and retrieve result and increment cats or dogs
